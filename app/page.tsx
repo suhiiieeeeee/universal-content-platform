@@ -32,7 +32,7 @@ export default function Page() {
             <p className="max-w-xl text-pretty text-lg leading-8 text-muted-foreground">Datakit is the calm, developer-first CMS for teams who want to manage structured content without touching JSON files or redeploying their frontend.</p>
           </div>
           <div className="flex flex-wrap items-center gap-3">
-            <Button size="lg" asChild><Link href="/signup">Create your workspace <ArrowRight data-icon="inline-end" /></Link></Button>
+            <Button size="lg" asChild><Link href="/signup">Create your account <ArrowRight data-icon="inline-end" /></Link></Button>
             <Button size="lg" variant="outline" asChild><Link href="/login">Open dashboard</Link></Button>
           </div>
           <p className="font-mono text-xs text-muted-foreground">No credit card · Built for Next.js, Astro, and any HTTP client</p>

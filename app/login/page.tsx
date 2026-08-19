@@ -52,7 +52,7 @@ function LoginForm() {
     <div className="flex flex-col gap-8">
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">Welcome back</h1>
-        <p className="mt-1 text-sm text-muted-foreground">Sign in to your Datakit workspace.</p>
+        <p className="mt-1 text-sm text-muted-foreground">Sign in to manage your Datakit files.</p>
       </div>
       <form onSubmit={handleLogin}>
         <FieldGroup>
