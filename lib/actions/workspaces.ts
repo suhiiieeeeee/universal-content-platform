@@ -29,31 +29,26 @@ export async function createWorkspace(formData: FormData): Promise<ActionResult<
   const description = String(formData.get("description") ?? "").trim() || null
   if (name.length < 2) return { ok: false, error: "Name must be at least 2 characters." }
 
-  let slug = slugify(name)
-  if (slug.length < 2) slug = `workspace-${Date.now().toString(36)}`
+  const slug = slugify(name)
+  if (slug.length < 2) return { ok: false, error: "Please choose a workspace name with at least 2 letters or numbers." }
 
-  for (let attempt = 0; attempt < 5; attempt++) {
-    const candidate = attempt === 0 ? slug : `${slug}-${attempt}`
-    const { data, error } = await supabase
-      .from("workspaces")
-      .insert({
-        name,
-        slug: candidate,
-        description,
-        owner_id: authData.user.id,
-      })
-      .select("slug")
-      .single()
+  const { data, error } = await supabase.rpc("create_workspace", {
+    workspace_name: name,
+    workspace_slug: slug,
+    workspace_description: description,
+  })
 
-    if (!error && data) {
-      revalidatePath("/dashboard/workspaces")
-      return { ok: true, data: { slug: data.slug } }
-    }
-    if (error && error.code !== "23505") {
-      return { ok: false, error: error.message }
-    }
+  if (!error && data) {
+    revalidatePath("/dashboard/workspaces")
+    return { ok: true, data: { slug: data.slug } }
   }
-  return { ok: false, error: "Could not generate a unique workspace URL. Try a different name." }
+
+  if (error?.code === "23505") return { ok: false, error: "That workspace URL is already in use." }
+  if (error?.code === "42501" || error?.message?.toLowerCase().includes("not authenticated")) {
+    return { ok: false, error: "Please sign in before creating a workspace." }
+  }
+  if (error?.code === "22023") return { ok: false, error: "Please check the workspace name and URL." }
+  return { ok: false, error: "Unable to create workspace. Please check the workspace name and try again." }
 }
 
 export async function updateWorkspace(workspaceId: string, formData: FormData): Promise<ActionResult> {
