@@ -35,10 +35,12 @@ export async function createWorkspace(formData: FormData): Promise<ActionResult<
   for (let attempt = 0; attempt < 5; attempt++) {
     const candidate = attempt === 0 ? slug : `${slug}-${attempt}`
     const { data, error } = await supabase
-      .from("workspaces")
-      .insert({ name, slug: candidate, description, owner_id: authData.user.id })
-      .select("slug")
-      .single()
+      .rpc("create_workspace", {
+        workspace_name: name,
+        workspace_slug: candidate,
+        workspace_description: description,
+      })
+      .maybeSingle()
 
     if (!error && data) {
       revalidatePath("/dashboard/workspaces")
