@@ -70,15 +70,13 @@ export function AppSidebar({
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" render={<Link href="/dashboard" />}>
-              <Link href="/dashboard">
-                <div className="flex size-6 items-center justify-center rounded-md bg-primary text-primary-foreground">
-                  <Database className="size-3.5" />
-                </div>
-                <div className="flex flex-col leading-none">
-                  <span className="font-mono text-sm font-semibold">Datakit</span>
-                  <span className="text-xs text-muted-foreground">@{user.username}</span>
-                </div>
-              </Link>
+              <div className="flex size-6 items-center justify-center rounded-md bg-primary text-primary-foreground">
+                <Database className="size-3.5" />
+              </div>
+              <div className="flex flex-col leading-none">
+                <span className="font-mono text-sm font-semibold">Datakit</span>
+                <span className="text-xs text-muted-foreground">@{user.username}</span>
+              </div>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
@@ -124,10 +122,8 @@ export function AppSidebar({
                 return (
                   <SidebarMenuItem key={item.href}>
                     <SidebarMenuButton render={<Link href={item.href} />} isActive={active} tooltip={item.label}>
-                      <Link href={item.href}>
-                        <item.icon />
-                        <span>{item.label}</span>
-                      </Link>
+                      <item.icon />
+                      <span>{item.label}</span>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 )
@@ -140,10 +136,8 @@ export function AppSidebar({
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton render={<Link href="/dashboard/settings" />} isActive={pathname.startsWith("/dashboard/settings")} tooltip="Settings">
-              <Link href="/dashboard/settings">
-                <Settings />
-                <span>Settings</span>
-              </Link>
+              <Settings />
+              <span>Settings</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
