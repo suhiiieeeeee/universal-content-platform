@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache"
 import { createClient } from "@/lib/supabase/server"
-import type { ActionResult } from "@/lib/actions/workspaces"
+import type { ActionResult } from "@/lib/actions/result"
 
 export async function updateProfile(formData: FormData): Promise<ActionResult> {
   const supabase = await createClient()

@@ -36,7 +36,6 @@ export async function createCollection(
       .from("collections")
       .insert({
         user_id: authData.user.id,
-        workspace_id: null,
         name,
         slug: candidate,
         description,
@@ -46,7 +45,9 @@ export async function createCollection(
       .single()
 
     if (!error && data) {
-      revalidatePath("/dashboard/workspaces")
+      revalidatePath("/dashboard")
+  revalidatePath("/dashboard/collections")
+  revalidatePath("/dashboard/files")
       return { ok: true, data: { slug: data.slug } }
     }
     if (error && error.code !== "23505") {
@@ -70,7 +71,9 @@ export async function updateCollection(collectionId: string, formData: FormData)
     .update({ name, description, default_visibility: defaultVisibility })
     .eq("id", collectionId)
   if (error) return { ok: false, error: error.message }
-  revalidatePath("/dashboard/workspaces")
+  revalidatePath("/dashboard")
+  revalidatePath("/dashboard/collections")
+  revalidatePath("/dashboard/files")
   return { ok: true }
 }
 
@@ -80,7 +83,9 @@ export async function deleteCollection(collectionId: string): Promise<ActionResu
   if (!authData.user) return { ok: false, error: "Not authenticated." }
   const { error } = await supabase.from("collections").delete().eq("id", collectionId)
   if (error) return { ok: false, error: error.message }
-  revalidatePath("/dashboard/workspaces")
+  revalidatePath("/dashboard")
+  revalidatePath("/dashboard/collections")
+  revalidatePath("/dashboard/files")
   return { ok: true }
 }
 
@@ -103,7 +108,6 @@ export async function duplicateCollection(collectionId: string): Promise<ActionR
       .from("collections")
       .insert({
         user_id: authData.user.id,
-        workspace_id: original.workspace_id,
         name: `${original.name} Copy`,
         slug: candidate,
         description: original.description,
@@ -133,12 +137,13 @@ export async function duplicateCollection(collectionId: string): Promise<ActionR
     )
   }
 
-  revalidatePath("/dashboard/workspaces")
+  revalidatePath("/dashboard")
+  revalidatePath("/dashboard/collections")
+  revalidatePath("/dashboard/files")
   return { ok: true, data: { slug: inserted.slug } }
 }
 
 export async function saveSchema(
-  workspaceId: string,
   collectionId: string,
   name: string,
   fields: SchemaField[],
@@ -151,13 +156,15 @@ export async function saveSchema(
   if (schemaId) {
     const { error } = await supabase.from("schemas").update({ name, fields }).eq("id", schemaId)
     if (error) return { ok: false, error: error.message }
-    revalidatePath("/dashboard/workspaces")
+    revalidatePath("/dashboard")
+  revalidatePath("/dashboard/collections")
+  revalidatePath("/dashboard/files")
     return { ok: true, data: { schemaId } }
   }
 
   const { data, error } = await supabase
     .from("schemas")
-    .insert({ user_id: authData.user.id, workspace_id: workspaceId, name, fields })
+    .insert({ user_id: authData.user.id, name, fields })
     .select("id")
     .single()
   if (error || !data) return { ok: false, error: error?.message ?? "Could not create schema." }
@@ -165,7 +172,9 @@ export async function saveSchema(
   const { error: linkError } = await supabase.from("collections").update({ schema_id: data.id }).eq("id", collectionId)
   if (linkError) return { ok: false, error: linkError.message }
 
-  revalidatePath("/dashboard/workspaces")
+  revalidatePath("/dashboard")
+  revalidatePath("/dashboard/collections")
+  revalidatePath("/dashboard/files")
   return { ok: true, data: { schemaId: data.id } }
 }
 
@@ -176,6 +185,8 @@ export async function removeSchema(collectionId: string, schemaId: string): Prom
   const { error: unlinkError } = await supabase.from("collections").update({ schema_id: null }).eq("id", collectionId)
   if (unlinkError) return { ok: false, error: unlinkError.message }
   await supabase.from("schemas").delete().eq("id", schemaId)
-  revalidatePath("/dashboard/workspaces")
+  revalidatePath("/dashboard")
+  revalidatePath("/dashboard/collections")
+  revalidatePath("/dashboard/files")
   return { ok: true }
 }

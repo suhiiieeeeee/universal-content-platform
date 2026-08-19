@@ -17,11 +17,12 @@ function slugify(input: string) {
 }
 
 export async function createDocument(
-  collectionId: string,
+  collectionId: string | null,
   slugInput: string,
   data: Record<string, unknown>,
   visibility: DocumentVisibility,
-): Promise<ActionResult<{ slug: string }>> {
+  type: "json" | "markdown" = "json",
+): Promise<ActionResult<{ slug: string; id: string }>> {
   const supabase = await createClient()
   const { data: authData } = await supabase.auth.getUser()
   if (!authData.user) return { ok: false, error: "Not authenticated." }
@@ -36,21 +37,35 @@ export async function createDocument(
         user_id: authData.user.id,
         collection_id: collectionId,
         slug: candidate,
+        name: slugInput.trim(),
+        type,
         data,
         visibility,
         created_by: authData.user.id,
         updated_by: authData.user.id,
       })
-      .select("slug")
+      .select("id, slug")
       .single()
 
     if (!error && inserted) {
-      revalidatePath("/dashboard/workspaces")
-      return { ok: true, data: { slug: inserted.slug } }
+      revalidatePath("/dashboard")
+      revalidatePath("/dashboard/files")
+      return { ok: true, data: { id: inserted.id, slug: inserted.slug } }
     }
     if (error && error.code !== "23505") return { ok: false, error: error.message }
   }
   return { ok: false, error: "Could not generate a unique document slug." }
+}
+
+export async function importDocument(name: string, type: "json" | "markdown", data: Record<string, unknown>): Promise<ActionResult<{ id: string }>> {
+  const supabase = await createClient()
+  const { data: authData } = await supabase.auth.getUser()
+  if (!authData.user) return { ok: false, error: "Not authenticated." }
+  const base = slugify(name) || `import-${Date.now().toString(36)}`
+  const { data: inserted, error } = await supabase.from("documents").insert({ user_id: authData.user.id, collection_id: null, name, slug: base, type, data, status: "draft", visibility: "private", created_by: authData.user.id, updated_by: authData.user.id }).select("id").single()
+  if (error || !inserted) return { ok: false, error: "Could not import this file." }
+  revalidatePath("/dashboard/files")
+  return { ok: true, data: { id: inserted.id } }
 }
 
 export async function updateDocument(
@@ -97,7 +112,8 @@ export async function updateDocument(
 
   const { error } = await supabase.from("documents").update(payload).eq("id", documentId)
   if (error) return { ok: false, error: error.message }
-  revalidatePath("/dashboard/workspaces")
+  revalidatePath("/dashboard")
+      revalidatePath("/dashboard/files")
   return { ok: true }
 }
 
@@ -107,7 +123,8 @@ export async function deleteDocument(documentId: string): Promise<ActionResult> 
   if (!authData.user) return { ok: false, error: "Not authenticated." }
   const { error } = await supabase.from("documents").delete().eq("id", documentId)
   if (error) return { ok: false, error: error.message }
-  revalidatePath("/dashboard/workspaces")
+  revalidatePath("/dashboard")
+      revalidatePath("/dashboard/files")
   return { ok: true }
 }
 
