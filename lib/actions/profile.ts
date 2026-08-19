@@ -47,7 +47,28 @@ export async function updateEmail(newEmail: string, origin: string): Promise<Act
 
 export async function updatePassword(newPassword: string): Promise<ActionResult> {
   const supabase = await createClient()
+  if (newPassword.length < 8) return { ok: false, error: "Password must be at least 8 characters." }
   const { error } = await supabase.auth.updateUser({ password: newPassword })
   if (error) return { ok: false, error: error.message }
+  return { ok: true }
+}
+
+export async function updatePreferences(preferences: {
+  theme?: string
+  color_mode?: string
+  editor_mode?: string
+  sidebar_collapsed?: boolean
+  font_size?: string
+  reduced_motion?: boolean
+}): Promise<ActionResult> {
+  const supabase = await createClient()
+  const { data } = await supabase.auth.getUser()
+  if (!data.user) return { ok: false, error: "Not authenticated." }
+
+  const { error } = await supabase
+    .from("user_preferences")
+    .upsert({ user_id: data.user.id, ...preferences }, { onConflict: "user_id" })
+  if (error) return { ok: false, error: "Could not save preferences." }
+  revalidatePath("/dashboard/settings")
   return { ok: true }
 }

@@ -116,8 +116,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       if (partial.reducedMotion !== undefined) payload.reduced_motion = partial.reducedMotion
       supabase
         .from("user_preferences")
-        .update(payload)
-        .eq("user_id", data.user.id)
+        .upsert({ user_id: data.user.id, ...payload }, { onConflict: "user_id" })
         .then(() => {})
     })
   }, [])
