@@ -5,6 +5,10 @@ import { createClient } from "@/lib/supabase/server"
 import type { ActionResult } from "@/lib/actions/result"
 import type { DocumentStatus, DocumentVisibility } from "@/lib/types"
 
+function normalizeFileTitle(input: string, _type: "json" | "markdown") {
+  return input.trim()
+}
+
 function slugify(input: string) {
   return input
     .toLowerCase()
@@ -27,7 +31,9 @@ export async function createDocument(
   const { data: authData } = await supabase.auth.getUser()
   if (!authData.user) return { ok: false, error: "Not authenticated." }
 
-  let slug = slugify(slugInput) || `doc-${Date.now().toString(36)}`
+  const title = normalizeFileTitle(slugInput, type)
+  if (!title) return { ok: false, error: "Please enter a file name." }
+  let slug = slugify(title) || `doc-${Date.now().toString(36)}`
 
   for (let attempt = 0; attempt < 5; attempt++) {
     const candidate = attempt === 0 ? slug : `${slug}-${attempt}`
@@ -37,9 +43,11 @@ export async function createDocument(
         user_id: authData.user.id,
         collection_id: collectionId,
         slug: candidate,
-        name: slugInput.trim(),
+        title,
+        name: title,
         type,
         data,
+        status: "draft",
         visibility,
         created_by: authData.user.id,
         updated_by: authData.user.id,
@@ -61,8 +69,19 @@ export async function importDocument(name: string, type: "json" | "markdown", da
   const supabase = await createClient()
   const { data: authData } = await supabase.auth.getUser()
   if (!authData.user) return { ok: false, error: "Not authenticated." }
-  const base = slugify(name) || `import-${Date.now().toString(36)}`
-  const { data: inserted, error } = await supabase.from("documents").insert({ user_id: authData.user.id, collection_id: null, name, slug: base, type, data, status: "draft", visibility: "private", created_by: authData.user.id, updated_by: authData.user.id }).select("id").single()
+  const title = normalizeFileTitle(name, type)
+  if (!title) return { ok: false, error: "Please enter a file name." }
+  let inserted: { id: string } | null = null
+  let error: { code?: string; message?: string } | null = null
+  const base = slugify(title) || `import-${Date.now().toString(36)}`
+  for (let attempt = 0; attempt < 5; attempt++) {
+    const candidate = attempt === 0 ? base : `${base}-${attempt}`
+    const result = await supabase.from("documents").insert({ user_id: authData.user.id, collection_id: null, title, name: title, slug: candidate, type, data, status: "draft", visibility: "private", created_by: authData.user.id, updated_by: authData.user.id }).select("id").single()
+    inserted = result.data
+    error = result.error
+    if (inserted) break
+    if (error?.code !== "23505") break
+  }
   if (error || !inserted) return { ok: false, error: "Could not import this file." }
   revalidatePath("/dashboard/files")
   return { ok: true, data: { id: inserted.id } }

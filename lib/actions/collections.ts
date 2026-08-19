@@ -124,12 +124,16 @@ export async function duplicateCollection(collectionId: string): Promise<ActionR
   }
   if (!inserted) return { ok: false, error: "Could not duplicate collection." }
 
-  const { data: docs } = await supabase.from("documents").select("slug, data, status, visibility").eq("collection_id", collectionId)
+  const { data: docs } = await supabase.from("documents").select("slug, title, data, status, visibility, type").eq("collection_id", collectionId)
   if (docs && docs.length > 0) {
     await supabase.from("documents").insert(
       docs.map((d) => ({
+        user_id: authData.user.id,
         collection_id: inserted!.id,
         slug: d.slug,
+        title: d.title,
+        name: d.title,
+        type: d.type ?? "json",
         data: d.data,
         status: "draft",
         visibility: d.visibility,

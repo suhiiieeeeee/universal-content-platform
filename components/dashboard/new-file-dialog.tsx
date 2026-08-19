@@ -22,7 +22,7 @@ export function NewFileDialog() {
 
   async function submit() {
     setError(null)
-    if (name.trim().length < 2) return setError("File name must be at least 2 characters.")
+    if (!name.trim()) return setError("Please enter a file name.")
     setPending(true)
     const result = await createDocument(null, name, type === "markdown" ? { content: "" } : {}, visibility, type)
     setPending(false)
