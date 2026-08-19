@@ -1,10 +1,9 @@
 import Link from "next/link"
 import { notFound, redirect } from "next/navigation"
-import { FileText, Layers, Settings, Users } from "lucide-react"
+import { FileText, Layers } from "lucide-react"
 import { createClient } from "@/lib/supabase/server"
 import { DashboardHeader } from "@/components/dashboard/dashboard-header"
 import { NewCollectionDialog } from "@/components/dashboard/new-collection-dialog"
-import { Button } from "@/components/ui/button"
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Empty, EmptyHeader, EmptyMedia, EmptyTitle, EmptyDescription, EmptyContent } from "@/components/ui/empty"
@@ -57,21 +56,7 @@ export default async function WorkspaceDetailPage({ params }: { params: Promise<
         description={workspace.description ?? `/${workspace.slug}`}
         profile={profileForHeader}
         actions={
-          <>
-            <Button variant="outline" size="sm" asChild>
-              <Link href={`/dashboard/workspaces/${workspace.slug}/settings`}>
-                <Settings data-icon="inline-start" />
-                Settings
-              </Link>
-            </Button>
-            <Button variant="outline" size="sm" asChild>
-              <Link href={`/dashboard/workspaces/${workspace.slug}/members`}>
-                <Users data-icon="inline-start" />
-                Members
-              </Link>
-            </Button>
-            <NewCollectionDialog workspaceId={workspace.id} workspaceSlug={workspace.slug} />
-          </>
+          <NewCollectionDialog workspaceId={workspace.id} workspaceSlug={workspace.slug} />
         }
       />
       <div className="flex flex-1 flex-col gap-4 p-6">

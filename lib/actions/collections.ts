@@ -21,6 +21,8 @@ export async function createCollection(
   formData: FormData,
 ): Promise<ActionResult<{ slug: string }>> {
   const supabase = await createClient()
+  const { data: authData } = await supabase.auth.getUser()
+  if (!authData.user) return { ok: false, error: "Not authenticated." }
   const name = String(formData.get("name") ?? "").trim()
   const description = String(formData.get("description") ?? "").trim() || null
   const defaultVisibility = String(formData.get("default_visibility") ?? "private")
@@ -56,6 +58,8 @@ export async function createCollection(
 
 export async function updateCollection(collectionId: string, formData: FormData): Promise<ActionResult> {
   const supabase = await createClient()
+  const { data: authData } = await supabase.auth.getUser()
+  if (!authData.user) return { ok: false, error: "Not authenticated." }
   const name = String(formData.get("name") ?? "").trim()
   const description = String(formData.get("description") ?? "").trim() || null
   const defaultVisibility = String(formData.get("default_visibility") ?? "private")
@@ -72,6 +76,8 @@ export async function updateCollection(collectionId: string, formData: FormData)
 
 export async function deleteCollection(collectionId: string): Promise<ActionResult> {
   const supabase = await createClient()
+  const { data: authData } = await supabase.auth.getUser()
+  if (!authData.user) return { ok: false, error: "Not authenticated." }
   const { error } = await supabase.from("collections").delete().eq("id", collectionId)
   if (error) return { ok: false, error: error.message }
   revalidatePath("/dashboard/workspaces")
@@ -80,6 +86,8 @@ export async function deleteCollection(collectionId: string): Promise<ActionResu
 
 export async function duplicateCollection(collectionId: string): Promise<ActionResult<{ slug: string }>> {
   const supabase = await createClient()
+  const { data: authData } = await supabase.auth.getUser()
+  if (!authData.user) return { ok: false, error: "Not authenticated." }
   const { data: original, error: fetchError } = await supabase
     .from("collections")
     .select("*")
@@ -136,6 +144,8 @@ export async function saveSchema(
   schemaId?: string | null,
 ): Promise<ActionResult<{ schemaId: string }>> {
   const supabase = await createClient()
+  const { data: authData } = await supabase.auth.getUser()
+  if (!authData.user) return { ok: false, error: "Not authenticated." }
 
   if (schemaId) {
     const { error } = await supabase.from("schemas").update({ name, fields }).eq("id", schemaId)
@@ -160,6 +170,8 @@ export async function saveSchema(
 
 export async function removeSchema(collectionId: string, schemaId: string): Promise<ActionResult> {
   const supabase = await createClient()
+  const { data: authData } = await supabase.auth.getUser()
+  if (!authData.user) return { ok: false, error: "Not authenticated." }
   const { error: unlinkError } = await supabase.from("collections").update({ schema_id: null }).eq("id", collectionId)
   if (unlinkError) return { ok: false, error: unlinkError.message }
   await supabase.from("schemas").delete().eq("id", schemaId)

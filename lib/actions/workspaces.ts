@@ -55,6 +55,8 @@ export async function createWorkspace(formData: FormData): Promise<ActionResult<
 
 export async function updateWorkspace(workspaceId: string, formData: FormData): Promise<ActionResult> {
   const supabase = await createClient()
+  const { data: authData } = await supabase.auth.getUser()
+  if (!authData.user) return { ok: false, error: "Not authenticated." }
   const name = String(formData.get("name") ?? "").trim()
   const description = String(formData.get("description") ?? "").trim() || null
   if (name.length < 2) return { ok: false, error: "Name must be at least 2 characters." }
@@ -67,6 +69,8 @@ export async function updateWorkspace(workspaceId: string, formData: FormData): 
 
 export async function deleteWorkspace(workspaceId: string): Promise<ActionResult> {
   const supabase = await createClient()
+  const { data: authData } = await supabase.auth.getUser()
+  if (!authData.user) return { ok: false, error: "Not authenticated." }
   const { error } = await supabase.from("workspaces").delete().eq("id", workspaceId)
   if (error) return { ok: false, error: error.message }
   revalidatePath("/dashboard/workspaces")

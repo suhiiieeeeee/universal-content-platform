@@ -101,6 +101,8 @@ export async function updateDocument(
 
 export async function deleteDocument(documentId: string): Promise<ActionResult> {
   const supabase = await createClient()
+  const { data: authData } = await supabase.auth.getUser()
+  if (!authData.user) return { ok: false, error: "Not authenticated." }
   const { error } = await supabase.from("documents").delete().eq("id", documentId)
   if (error) return { ok: false, error: error.message }
   revalidatePath("/dashboard/workspaces")
@@ -109,6 +111,8 @@ export async function deleteDocument(documentId: string): Promise<ActionResult> 
 
 export async function restoreDocumentVersion(documentId: string, versionId: string): Promise<ActionResult> {
   const supabase = await createClient()
+  const { data: authData } = await supabase.auth.getUser()
+  if (!authData.user) return { ok: false, error: "Not authenticated." }
   const { data: version, error: fetchError } = await supabase
     .from("document_versions")
     .select("data, status, visibility")
