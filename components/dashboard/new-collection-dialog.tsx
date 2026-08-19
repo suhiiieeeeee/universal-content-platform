@@ -46,12 +46,7 @@ export function NewCollectionDialog({ workspaceId, workspaceSlug }: { workspaceI
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button size="sm">
-          <Plus data-icon="inline-start" />
-          New collection
-        </Button>
-      </DialogTrigger>
+      <DialogTrigger render={<Button size="sm"><Plus data-icon="inline-start" />New collection</Button>} />
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="font-mono">New collection</DialogTitle>

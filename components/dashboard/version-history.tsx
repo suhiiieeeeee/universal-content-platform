@@ -39,12 +39,7 @@ export function VersionHistory({
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
-      <SheetTrigger asChild>
-        <Button variant="outline" size="sm">
-          <History data-icon="inline-start" />
-          History ({versions.length})
-        </Button>
-      </SheetTrigger>
+      <SheetTrigger render={<Button variant="outline" size="sm"><History data-icon="inline-start" />History ({versions.length})</Button>} />
       <SheetContent className="overflow-y-auto">
         <SheetHeader>
           <SheetTitle className="font-mono">Version history</SheetTitle>

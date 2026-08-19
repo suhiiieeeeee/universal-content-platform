@@ -69,7 +69,7 @@ export function AppSidebar({
       <SidebarHeader className="border-b border-sidebar-border">
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton size="lg" asChild>
+            <SidebarMenuButton size="lg" render={<Link href="/dashboard" />}>
               <Link href="/dashboard">
                 <div className="flex size-6 items-center justify-center rounded-md bg-primary text-primary-foreground">
                   <Database className="size-3.5" />
@@ -123,7 +123,7 @@ export function AppSidebar({
                 const active = item.href === "/dashboard" ? pathname === item.href : pathname.startsWith(item.href)
                 return (
                   <SidebarMenuItem key={item.href}>
-                    <SidebarMenuButton asChild isActive={active} tooltip={item.label}>
+                    <SidebarMenuButton render={<Link href={item.href} />} isActive={active} tooltip={item.label}>
                       <Link href={item.href}>
                         <item.icon />
                         <span>{item.label}</span>
@@ -139,7 +139,7 @@ export function AppSidebar({
       <SidebarFooter>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton asChild isActive={pathname.startsWith("/dashboard/settings")} tooltip="Settings">
+            <SidebarMenuButton render={<Link href="/dashboard/settings" />} isActive={pathname.startsWith("/dashboard/settings")} tooltip="Settings">
               <Link href="/dashboard/settings">
                 <Settings />
                 <span>Settings</span>

@@ -103,11 +103,7 @@ export function SchemaEditor({
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
-      <SheetTrigger asChild>
-        <Button variant="outline" size="sm">
-          Edit schema
-        </Button>
-      </SheetTrigger>
+      <SheetTrigger render={<Button variant="outline" size="sm">Edit schema</Button>} />
       <SheetContent className="w-full overflow-y-auto sm:max-w-lg">
         <SheetHeader>
           <SheetTitle className="font-mono">Schema</SheetTitle>

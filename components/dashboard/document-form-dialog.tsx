@@ -151,12 +151,7 @@ export function DocumentFormDialog({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button size="sm">
-          <Plus data-icon="inline-start" />
-          New document
-        </Button>
-      </DialogTrigger>
+      <DialogTrigger render={<Button size="sm"><Plus data-icon="inline-start" />New document</Button>} />
       <DialogContent className="max-h-[85vh] overflow-y-auto sm:max-w-lg">
         <DialogHeader>
           <DialogTitle className="font-mono">New document</DialogTitle>
