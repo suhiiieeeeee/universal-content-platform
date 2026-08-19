@@ -75,18 +75,18 @@ export function DocumentsTable({
             </TableCell>
             <TableCell>
               <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon">
-                    <MoreHorizontal className="size-4" />
-                  </Button>
+                <DropdownMenuTrigger render={<Button variant="ghost" size="icon" />}>
+                  <MoreHorizontal className="size-4" />
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuItem asChild>
-                    <Link
-                      href={`/dashboard/workspaces/${workspaceSlug}/collections/${collectionSlug}/documents/${doc.slug}`}
-                    >
-                      Open
-                    </Link>
+                  <DropdownMenuItem
+                    render={
+                      <Link
+                        href={`/dashboard/workspaces/${workspaceSlug}/collections/${collectionSlug}/documents/${doc.slug}`}
+                      />
+                    }
+                  >
+                    Open
                   </DropdownMenuItem>
                   <ConfirmDeleteDialog
                     trigger={

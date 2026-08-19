@@ -26,10 +26,8 @@ export function ThemeQuickSwitch() {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" aria-label="Theme settings">
-          <ModeIcon />
-        </Button>
+      <DropdownMenuTrigger render={<Button variant="ghost" size="icon" aria-label="Theme settings" />}>
+        <ModeIcon />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56">
         <DropdownMenuLabel>Color mode</DropdownMenuLabel>

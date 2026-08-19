@@ -90,30 +90,24 @@ export function AppSidebar({
             <SidebarMenu>
               <SidebarMenuItem>
                 <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <SidebarMenuButton>
-                      <Layers />
-                      <span className="truncate">{currentWorkspace?.name ?? "Select workspace"}</span>
-                      <ChevronsUpDown className="ml-auto size-3.5 text-muted-foreground" />
-                    </SidebarMenuButton>
+                  <DropdownMenuTrigger render={<SidebarMenuButton />}>
+                    <Layers />
+                    <span className="truncate">{currentWorkspace?.name ?? "Select workspace"}</span>
+                    <ChevronsUpDown className="ml-auto size-3.5 text-muted-foreground" />
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="start" className="w-56">
                     <DropdownMenuLabel>Workspaces</DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     {workspaces.map((w) => (
-                      <DropdownMenuItem key={w.id} asChild>
-                        <Link href={`/dashboard/workspaces/${w.slug}`}>
-                          <Layers data-icon="inline-start" />
-                          {w.name}
-                        </Link>
+                      <DropdownMenuItem key={w.id} render={<Link href={`/dashboard/workspaces/${w.slug}`} />}>
+                        <Layers data-icon="inline-start" />
+                        {w.name}
                       </DropdownMenuItem>
                     ))}
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem asChild>
-                      <Link href="/dashboard/workspaces/new">
-                        <Plus data-icon="inline-start" />
-                        New workspace
-                      </Link>
+                    <DropdownMenuItem render={<Link href="/dashboard/workspaces/new" />}>
+                      <Plus data-icon="inline-start" />
+                      New workspace
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>

@@ -36,13 +36,11 @@ export function UserMenu({
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <button className="flex items-center gap-2 rounded-md p-1 outline-none focus-visible:ring-2 focus-visible:ring-ring">
-          <Avatar className="size-7">
-            {avatarUrl && <AvatarImage src={avatarUrl} alt={username} />}
-            <AvatarFallback className="text-[10px]">{initials}</AvatarFallback>
-          </Avatar>
-        </button>
+      <DropdownMenuTrigger render={<button className="flex items-center gap-2 rounded-md p-1 outline-none focus-visible:ring-2 focus-visible:ring-ring" />}>
+        <Avatar className="size-7">
+          {avatarUrl && <AvatarImage src={avatarUrl} alt={username} />}
+          <AvatarFallback className="text-[10px]">{initials}</AvatarFallback>
+        </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56">
         <DropdownMenuLabel>
@@ -53,17 +51,13 @@ export function UserMenu({
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem asChild>
-            <Link href="/dashboard/settings">
-              <User data-icon="inline-start" />
-              Profile
-            </Link>
+          <DropdownMenuItem render={<Link href="/dashboard/settings" />}>
+            <User data-icon="inline-start" />
+            Profile
           </DropdownMenuItem>
-          <DropdownMenuItem asChild>
-            <Link href="/dashboard/settings?tab=preferences">
-              <Settings data-icon="inline-start" />
-              Preferences
-            </Link>
+          <DropdownMenuItem render={<Link href="/dashboard/settings?tab=preferences" />}>
+            <Settings data-icon="inline-start" />
+            Preferences
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
