@@ -33,7 +33,7 @@ export default async function DashboardLayout({
         user={{ email: userData.user.email ?? "", username: profile?.username ?? "", displayName: profile?.display_name ?? null }}
         workspaces={workspaces ?? []}
       />
-      <SidebarInset>{children}</SidebarInset>
+      <SidebarInset className="min-w-0 bg-background">{children}</SidebarInset>
     </SidebarProvider>
   )
 }

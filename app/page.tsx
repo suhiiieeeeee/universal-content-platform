@@ -22,7 +22,7 @@ export default function Page() {
         </div>
       </nav>
 
-      <section className="mx-auto grid max-w-6xl gap-16 px-6 pb-24 pt-16 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:px-8 lg:pb-32 lg:pt-24">
+      <section className="mx-auto grid max-w-6xl gap-12 px-6 pb-20 pt-14 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-20 lg:px-8 lg:pb-32 lg:pt-24">
         <div className="flex flex-col gap-8">
           <div className="flex w-fit items-center gap-2 rounded-full border border-border bg-card px-3 py-1.5 font-mono text-xs text-muted-foreground">
             <Zap className="size-3 text-primary" /> Content infrastructure for small teams
@@ -59,7 +59,26 @@ export default function Page() {
         </div>
       </section>
 
-      <footer className="mx-auto flex max-w-6xl flex-col gap-3 px-6 py-8 font-mono text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between lg:px-8"><span>datakit_</span><span>Content should be easy to change.</span></footer>
+      <section className="mx-auto flex max-w-6xl flex-col gap-8 px-6 py-20 lg:px-8 lg:py-28">
+        <div className="max-w-xl">
+          <p className="font-mono text-xs uppercase tracking-[0.18em] text-primary">A quieter workflow</p>
+          <h2 className="mt-3 text-balance font-mono text-3xl font-semibold tracking-[-0.04em] sm:text-4xl">Model once. Edit clearly. Publish with confidence.</h2>
+        </div>
+        <div className="grid gap-px border border-border bg-border md:grid-cols-3">
+          {[
+            ["01", "Define", "Create a collection with the fields your product actually needs."],
+            ["02", "Compose", "Write structured content in a focused editor with drafts and history."],
+            ["03", "Deliver", "Use one predictable endpoint across your website, app, or device."],
+          ].map(([number, title, description]) => (
+            <article key={number} className="flex min-h-48 flex-col justify-between gap-8 bg-background p-6 lg:p-8">
+              <span className="font-mono text-xs text-muted-foreground">{number}</span>
+              <div className="flex flex-col gap-2"><h3 className="font-mono text-base font-semibold">{title}</h3><p className="text-sm leading-6 text-muted-foreground">{description}</p></div>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <footer className="mx-auto flex max-w-6xl flex-col gap-3 border-t border-border px-6 py-8 font-mono text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between lg:px-8"><span>datakit_</span><span>Content should be easy to change.</span></footer>
     </main>
   )
 }
