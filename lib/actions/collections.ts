@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache"
 import { createClient } from "@/lib/supabase/server"
-import type { ActionResult } from "@/lib/actions/workspaces"
+import type { ActionResult } from "@/lib/actions/result"
 import type { SchemaField } from "@/lib/types"
 
 function slugify(input: string) {
@@ -17,7 +17,6 @@ function slugify(input: string) {
 }
 
 export async function createCollection(
-  workspaceId: string,
   formData: FormData,
 ): Promise<ActionResult<{ slug: string }>> {
   const supabase = await createClient()
@@ -36,7 +35,8 @@ export async function createCollection(
     const { data, error } = await supabase
       .from("collections")
       .insert({
-        workspace_id: workspaceId,
+        user_id: authData.user.id,
+        workspace_id: null,
         name,
         slug: candidate,
         description,
@@ -102,6 +102,7 @@ export async function duplicateCollection(collectionId: string): Promise<ActionR
     const { data, error } = await supabase
       .from("collections")
       .insert({
+        user_id: authData.user.id,
         workspace_id: original.workspace_id,
         name: `${original.name} Copy`,
         slug: candidate,
@@ -156,7 +157,7 @@ export async function saveSchema(
 
   const { data, error } = await supabase
     .from("schemas")
-    .insert({ workspace_id: workspaceId, name, fields })
+    .insert({ user_id: authData.user.id, workspace_id: workspaceId, name, fields })
     .select("id")
     .single()
   if (error || !data) return { ok: false, error: error?.message ?? "Could not create schema." }

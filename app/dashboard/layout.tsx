@@ -22,17 +22,9 @@ export default async function DashboardLayout({
     .eq("id", userData.user.id)
     .maybeSingle()
 
-  const { data: workspaces } = await supabase
-    .from("workspaces")
-    .select("id, name, slug, description, owner_id, created_at, updated_at")
-    .order("created_at", { ascending: true })
-
   return (
     <SidebarProvider>
-      <AppSidebar
-        user={{ email: userData.user.email ?? "", username: profile?.username ?? "", displayName: profile?.display_name ?? null }}
-        workspaces={workspaces ?? []}
-      />
+      <AppSidebar user={{ email: userData.user.email ?? "", username: profile?.username ?? "", displayName: profile?.display_name ?? null }} />
       <SidebarInset className="min-w-0 bg-background">{children}</SidebarInset>
     </SidebarProvider>
   )

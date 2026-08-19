@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache"
 import { createClient } from "@/lib/supabase/server"
-import type { ActionResult } from "@/lib/actions/workspaces"
+import type { ActionResult } from "@/lib/actions/result"
 import type { DocumentStatus, DocumentVisibility } from "@/lib/types"
 
 function slugify(input: string) {
@@ -33,6 +33,7 @@ export async function createDocument(
     const { data: inserted, error } = await supabase
       .from("documents")
       .insert({
+        user_id: authData.user.id,
         collection_id: collectionId,
         slug: candidate,
         data,
@@ -76,6 +77,7 @@ export async function updateDocument(
     if (current) {
       const nextVersion = (current.version_count ?? 0) + 1
       const { error: versionError } = await supabase.from("document_versions").insert({
+        user_id: authData.user.id,
         document_id: documentId,
         version_number: nextVersion,
         data: current.data,

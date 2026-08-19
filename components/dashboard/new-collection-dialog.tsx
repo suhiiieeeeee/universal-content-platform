@@ -25,7 +25,7 @@ import {
 } from "@/components/ui/select"
 import { createCollection } from "@/lib/actions/collections"
 
-export function NewCollectionDialog({ workspaceId, workspaceSlug }: { workspaceId: string; workspaceSlug: string }) {
+export function NewCollectionDialog() {
   const router = useRouter()
   const [open, setOpen] = useState(false)
   const [pending, setPending] = useState(false)
@@ -34,14 +34,14 @@ export function NewCollectionDialog({ workspaceId, workspaceSlug }: { workspaceI
   async function handleSubmit(formData: FormData) {
     setPending(true)
     setError(null)
-    const result = await createCollection(workspaceId, formData)
+    const result = await createCollection(formData)
     setPending(false)
     if (!result.ok) {
       setError(result.error ?? "Something went wrong.")
       return
     }
     setOpen(false)
-    router.push(`/dashboard/workspaces/${workspaceSlug}/collections/${result.data?.slug}`)
+    router.push(`/dashboard/collections/${result.data?.slug}`)
   }
 
   return (

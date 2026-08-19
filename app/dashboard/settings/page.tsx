@@ -14,7 +14,7 @@ export default async function SettingsPage() {
   return (
     <main className="flex min-h-full flex-col gap-8 p-6 md:p-10">
       <header className="flex flex-col gap-2">
-        <p className="font-mono text-xs uppercase tracking-[0.24em] text-muted-foreground">Workspace control plane</p>
+        <p className="font-mono text-xs uppercase tracking-[0.24em] text-muted-foreground">Account control plane</p>
         <h1 className="text-3xl font-semibold tracking-tight">Settings</h1>
         <p className="max-w-2xl text-sm leading-6 text-muted-foreground">Manage your profile and the preferences that follow you across devices.</p>
       </header>

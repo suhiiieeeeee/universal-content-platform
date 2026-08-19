@@ -1,4 +1,3 @@
-export type AppRole = "owner" | "admin" | "editor" | "contributor" | "viewer"
 export type DocumentStatus = "draft" | "published" | "archived"
 export type DocumentVisibility = "private" | "public" | "unlisted"
 
@@ -10,25 +9,6 @@ export interface Profile {
   bio: string | null
   created_at: string
   updated_at: string
-}
-
-export interface Workspace {
-  id: string
-  name: string
-  slug: string
-  description: string | null
-  owner_id: string
-  created_at: string
-  updated_at: string
-}
-
-export interface WorkspaceMember {
-  id: string
-  workspace_id: string
-  user_id: string
-  role: AppRole
-  created_at: string
-  profile?: Profile
 }
 
 export type SchemaFieldType =
@@ -52,7 +32,8 @@ export interface SchemaField {
 
 export interface Schema {
   id: string
-  workspace_id: string
+  user_id: string
+  workspace_id?: string
   name: string
   fields: SchemaField[]
   created_at: string
@@ -61,7 +42,8 @@ export interface Schema {
 
 export interface Collection {
   id: string
-  workspace_id: string
+  user_id: string
+  workspace_id?: string
   name: string
   slug: string
   description: string | null
@@ -74,6 +56,7 @@ export interface Collection {
 
 export interface DocumentRecord {
   id: string
+  user_id: string
   collection_id: string
   slug: string
   data: Record<string, unknown>
@@ -100,7 +83,8 @@ export interface DocumentVersion {
 
 export interface ApiKey {
   id: string
-  workspace_id: string
+  user_id: string
+  workspace_id?: string
   name: string
   key_prefix: string
   key_hash: string
@@ -112,39 +96,12 @@ export interface ApiKey {
 
 export interface AuditLog {
   id: string
-  workspace_id: string | null
+  user_id: string | null
+  workspace_id?: string | null
   actor_id: string | null
   action: string
   resource_type: string | null
   resource_id: string | null
   metadata: Record<string, unknown>
   created_at: string
-}
-
-export const ROLE_LABELS: Record<AppRole, string> = {
-  owner: "Owner",
-  admin: "Admin",
-  editor: "Editor",
-  contributor: "Contributor",
-  viewer: "Viewer",
-}
-
-export const ROLE_RANK: Record<AppRole, number> = {
-  viewer: 0,
-  contributor: 1,
-  editor: 2,
-  admin: 3,
-  owner: 4,
-}
-
-export function canManageWorkspace(role: AppRole | undefined) {
-  return role === "owner" || role === "admin"
-}
-
-export function canWrite(role: AppRole | undefined) {
-  return role === "owner" || role === "admin" || role === "editor" || role === "contributor"
-}
-
-export function canDelete(role: AppRole | undefined) {
-  return role === "owner" || role === "admin" || role === "editor"
 }
