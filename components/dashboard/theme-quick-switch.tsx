@@ -30,8 +30,8 @@ export function ThemeQuickSwitch() {
         <ModeIcon />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56">
-        <DropdownMenuLabel>Color mode</DropdownMenuLabel>
         <DropdownMenuGroup>
+          <DropdownMenuLabel>Color mode</DropdownMenuLabel>
           {COLOR_MODES.map((mode) => {
             const Icon = MODE_ICONS[mode]
             return (
@@ -44,11 +44,11 @@ export function ThemeQuickSwitch() {
           })}
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuLabel className="flex items-center gap-2">
-          <Palette className="size-3.5" />
-          Theme
-        </DropdownMenuLabel>
         <DropdownMenuGroup>
+          <DropdownMenuLabel className="flex items-center gap-2">
+            <Palette className="size-3.5" />
+            Theme
+          </DropdownMenuLabel>
           {THEMES.map((t) => (
             <DropdownMenuItem key={t.id} onClick={() => setTheme(t.id as ThemeId)}>
               <span>{t.label}</span>

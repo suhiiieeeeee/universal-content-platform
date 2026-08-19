@@ -28,6 +28,7 @@ import {
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -94,7 +95,9 @@ export function AppSidebar({
                     <ChevronsUpDown className="ml-auto size-3.5 text-muted-foreground" />
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="start" className="w-56">
-                    <DropdownMenuLabel>Workspaces</DropdownMenuLabel>
+                    <DropdownMenuGroup>
+                      <DropdownMenuLabel>Workspaces</DropdownMenuLabel>
+                    </DropdownMenuGroup>
                     <DropdownMenuSeparator />
                     {workspaces.map((w) => (
                       <DropdownMenuItem key={w.id} render={<Link href={`/dashboard/workspaces/${w.slug}`} />}>
