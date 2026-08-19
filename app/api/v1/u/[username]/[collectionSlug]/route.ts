@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server"
-import { createClient } from "@/lib/supabase/server"
+import { createAdminClient } from "@/lib/supabase/admin"
 
 export async function GET(request: Request, { params }: { params: Promise<{ username: string; collectionSlug: string }> }) {
   const { username, collectionSlug } = await params
   const url = new URL(request.url)
   const limit = Math.min(Math.max(Number(url.searchParams.get("limit") ?? 20) || 20, 1), 100)
-  const supabase = await createClient()
+  const supabase = createAdminClient()
   const { data: profile } = await supabase.from("profiles").select("id, username").eq("username", username).maybeSingle()
   if (!profile) return NextResponse.json({ error: "User not found" }, { status: 404 })
   const { data: collection } = await supabase.from("collections").select("id, name, slug").eq("user_id", profile.id).eq("slug", collectionSlug).maybeSingle()
